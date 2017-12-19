@@ -58,6 +58,10 @@
       <HintPath>..\packages\LemmaGenerator.1.1.0\lib\net20\LemmaSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Moq, Version=4.7.145.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.7.145\lib\net45\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.9.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -91,27 +95,38 @@
     <Compile Include="AppForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GeneratorConfig.cs" />
-    <Compile Include="IGeneratorFactory.cs" />
-    <Compile Include="ITagGenerator.cs" />
-    <Compile Include="ITextProcessor.cs" />
-    <Compile Include="IVisualiser.cs" />
+    <Compile Include="ImageGeneration\CloudLayouter.cs" />
+    <Compile Include="ImageGeneration\CloudLayouterFactory.cs" />
+    <Compile Include="TagGeneration\FrequencyCounter.cs" />
+    <Compile Include="ImageGeneration\ILayouterFactory.cs" />
+    <Compile Include="SettingsForm.cs" />
+    <Compile Include="SupportModules\CloudFactory.cs" />
+    <Compile Include="SupportModules\IIntersectionContainerFactory.cs" />
+    <Compile Include="TagGeneratorConfig.cs" />
+    <Compile Include="TagGeneration\IWeightAssigner.cs" />
+    <Compile Include="ImageGeneration\ImageGenerator.cs" />
+    <Compile Include="TagGeneration\ITagGenerator.cs" />
+    <Compile Include="TagGeneration\ITextExtractor.cs" />
+    <Compile Include="ImageGeneration\IVisualiser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="SupportModules\Cloud.cs" />
     <Compile Include="SupportModules\Geometry.cs" />
-    <Compile Include="DocumentReader\IDocumentReader.cs" />
     <Compile Include="SupportModules\IIntersectionContainer.cs" />
-    <Compile Include="ITagLayouter.cs" />
-    <Compile Include="TagGenerator.cs" />
+    <Compile Include="ImageGeneration\ITagLayouter.cs" />
+    <Compile Include="TagGeneration\TagGenerator.cs" />
+    <Compile Include="TagsCloudVisualizerModule.cs" />
+    <Compile Include="Tests\CloudLayouterShould.cs" />
+    <Compile Include="Tests\CloudContainerShould.cs" />
+    <Compile Include="Tests\TagGeneratorShould.cs" />
     <Compile Include="VisualizationConfig.cs" />
     <Compile Include="Walker\IWalker.cs" />
-    <Compile Include="CloudLayouter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Walker\IWalkerFactory.cs" />
     <Compile Include="Walker\SpiralWalker.cs" />
-    <Compile Include="Tag.cs" />
-    <Compile Include="DocumentReader\TextFileReader.cs" />
-    <Compile Include="TextProcessor.cs" />
-    <Compile Include="Visualization.cs" />
+    <Compile Include="TagGeneration\Tag.cs" />
+    <Compile Include="Walker\SpiralWalkerFactory.cs" />
+    <Compile Include="TagGeneration\WordExtractor.cs" />
+    <Compile Include="ImageGeneration\Visualization.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -124,6 +139,7 @@
     <Content Include="Classes\7zip\Compress\LzmaAlone\LzmaAlone.csproj" />
     <Content Include="Classes\7zip\Compress\LzmaAlone\LzmaAlone.sln" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

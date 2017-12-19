@@ -6,22 +6,22 @@ using LemmaSharp.Classes;
 using OpenNLP.Tools.PosTagger;
 using OpenNLP.Tools.Tokenize;
 
-namespace TagsCloudVisualization
+namespace TagsCloudVisualization.TagGeneration
 {
-    class TextProcessor : ITextProcessor
+    internal class WordExtractor : ITextExtractor
     {
-        private string modelPath = Path.Combine(
+        private readonly string modelPath = Path.Combine(
         Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory),
         "..",
         "..",
         "model"        
         );
-        private HashSet<string> illegalPartsOfSpeech = new HashSet<string>
+        private readonly HashSet<string> illegalPartsOfSpeech = new HashSet<string>
         {
             "CC", "CD", "DT", "EX", "IN", "LS", "MD", "RP", "SYM", "TO", "UH",
             "PDT", "POS", "WDT", "WP", "WP$", "WRB", "PRP", "PRP$"
         };
-        private HashSet<string> illegalWords = new HashSet<string>
+        private readonly HashSet<string> illegalWords = new HashSet<string>
         {
             "be", "is", "are", "so", "do", "have", "go", "not", "yes", "no", "get", "mr", "ms", "mrs", "sir"
         };
@@ -41,12 +41,12 @@ namespace TagsCloudVisualization
                 .Where(x => !illegalWords.Contains(x));
         }
 
-        private string RemovePunctuation(string str)
+        private static string RemovePunctuation(string str)
         {
             return new string(str.Where(c => !char.IsPunctuation(c)).ToArray());
         }
 
-        public IEnumerable<string> ProcessText(string text)
+        public IEnumerable<string> ExtractWords(string text)
         {
             return RemoveIllegalWords(RemovePunctuation(text));
         }

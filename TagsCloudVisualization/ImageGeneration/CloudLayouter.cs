@@ -1,7 +1,8 @@
 ﻿using System.Drawing;
+using TagsCloudVisualization.SupportModules;
 using TagsCloudVisualization.Walker;
 
-namespace TagsCloudVisualization
+namespace TagsCloudVisualization.ImageGeneration
 {
     public class CloudLayouter : ITagLayouter
     {
@@ -13,7 +14,7 @@ namespace TagsCloudVisualization
             Cloud = cloud;
             this.pointWalker = pointWalker;
         }
-
+       
         public Rectangle PutNextRectangle(Size rectangleSize)
         {
             Rectangle newRect;
@@ -23,10 +24,9 @@ namespace TagsCloudVisualization
                 newRect.Offset((newRect.Left - newRect.Right) / 2, (newRect.Top - newRect.Bottom) / 2);
             } while (Cloud.IntersectsWith(newRect));
 
-            Cloud.Append(newRect);
+            Cloud.Add(newRect);
+            pointWalker.Reset();
             return newRect;
         }
-
-        public IIntersectionContainer GetTagCloud() => Cloud;
     }
 }

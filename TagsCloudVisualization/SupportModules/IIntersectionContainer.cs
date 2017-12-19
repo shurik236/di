@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-namespace TagsCloudVisualization
+namespace TagsCloudVisualization.SupportModules
 {
-    public interface IIntersectionContainer : IEnumerable<Rectangle>
+    public interface IIntersectionContainer : IList<Rectangle>
     {
         bool IntersectsWith(Rectangle rect);
-
-        void Append(Rectangle rect);
     }
 }
