@@ -22,7 +22,6 @@ namespace TagsCloudVisualization
             container.Register(Component.For<IIntersectionContainer>().ImplementedBy<Cloud>().LifestyleTransient());
             container.Register(Component.For<ITagGenerator>().ImplementedBy<TagGenerator>().LifestyleTransient());
             container.Register(Component.For<ITagLayouter>().ImplementedBy<CloudLayouter>().LifestyleTransient());
-            container.Register(Component.For<Visualization>().ImplementedBy<Visualization>().LifestyleTransient());
             container.Register(Component.For<ITextExtractor>().ImplementedBy<WordExtractor>());
             container.Register(Component.For<ImageGenerator>().ImplementedBy<ImageGenerator>().LifestyleTransient());
         }

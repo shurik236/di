@@ -43,7 +43,7 @@ namespace TagsCloudVisualization.TagGeneration
 
         private static string RemovePunctuation(string str)
         {
-            return new string(str.Where(c => !char.IsPunctuation(c)).ToArray());
+            return new string(str.Where(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)).ToArray());
         }
 
         public IEnumerable<string> ExtractWords(string text)

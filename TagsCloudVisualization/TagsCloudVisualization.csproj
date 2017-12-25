@@ -107,7 +107,6 @@
     <Compile Include="ImageGeneration\ImageGenerator.cs" />
     <Compile Include="TagGeneration\ITagGenerator.cs" />
     <Compile Include="TagGeneration\ITextExtractor.cs" />
-    <Compile Include="ImageGeneration\IVisualiser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="SupportModules\Cloud.cs" />
     <Compile Include="SupportModules\Geometry.cs" />
@@ -117,7 +116,9 @@
     <Compile Include="TagsCloudVisualizerModule.cs" />
     <Compile Include="Tests\CloudLayouterShould.cs" />
     <Compile Include="Tests\CloudContainerShould.cs" />
+    <Compile Include="Tests\FrequencyCounterShould.cs" />
     <Compile Include="Tests\TagGeneratorShould.cs" />
+    <Compile Include="Tests\WordExtractorShould.cs" />
     <Compile Include="VisualizationConfig.cs" />
     <Compile Include="Walker\IWalker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -126,7 +127,6 @@
     <Compile Include="TagGeneration\Tag.cs" />
     <Compile Include="Walker\SpiralWalkerFactory.cs" />
     <Compile Include="TagGeneration\WordExtractor.cs" />
-    <Compile Include="ImageGeneration\Visualization.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
