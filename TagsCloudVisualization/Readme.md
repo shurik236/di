@@ -1,6 +1,2 @@
-100 identical rectangles<br />
-![Layout 1](https://github.com/shurik236/tdd/blob/master/TagsCloudVisualization/layout1.bmp)<br />
-50 different rectangles<br />
-![Layout 2](https://github.com/shurik236/tdd/blob/master/TagsCloudVisualization/layout2.bmp)<br />
-200 squares<br />
-![Layout 3](https://github.com/shurik236/tdd/blob/master/TagsCloudVisualization/layout3.bmp)<br />
+Taken from "The Hitch Hiker's Guide to the Galaxy" <br />
+![Layout](https://github.com/shurik236/di/blob/development/TagsCloudVisualization/layout.bmp)<br />
