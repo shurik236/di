@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="ImageGeneration\CloudLayouter.cs" />
     <Compile Include="ImageGeneration\CloudLayouterFactory.cs" />
+    <Compile Include="Result.cs" />
     <Compile Include="TagGeneration\FrequencyCounter.cs" />
     <Compile Include="ImageGeneration\ILayouterFactory.cs" />
     <Compile Include="SettingsForm.cs" />

@@ -4,6 +4,6 @@ namespace TagsCloudVisualization.TagGeneration
 {
     internal interface ITextExtractor
     {
-        IEnumerable<string> ExtractWords(string text);
+        Result<IEnumerable<string>> ExtractWords(string text);
     }
 }

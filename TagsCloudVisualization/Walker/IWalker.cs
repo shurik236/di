@@ -4,7 +4,7 @@ namespace TagsCloudVisualization.Walker
 {
     public interface IWalker
     {
-        Point GetNextPoint();
+        Result<Point> GetNextPoint();
         void Reset();
     }
 }

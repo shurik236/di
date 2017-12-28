@@ -4,6 +4,6 @@ namespace TagsCloudVisualization.TagGeneration
 {
     internal interface ITagGenerator
     {
-        IEnumerable<Tag> GenerateTags(IEnumerable<string> words, TagGeneratorConfig config);
+        Result<IEnumerable<Tag>> GenerateTags(IEnumerable<string> words, TagGeneratorConfig config);
     }
 }

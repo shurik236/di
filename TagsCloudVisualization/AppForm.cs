@@ -58,14 +58,9 @@ namespace TagsCloudVisualization
         {
             var dialog = new SaveFileDialog {Filter = "bmp files(*.bmp) | *.bmp"};
             if (dialog.ShowDialog() != DialogResult.OK) return;
-            try
-            {
-                BackgroundImage.Save(dialog.FileName);
-            }
-            catch (IOException)
-            {
-                Console.WriteLine("Error saving file!");
-            }
+            var saveResult = Result.OfAction(() => BackgroundImage.Save(dialog.FileName));
+            if (!saveResult.IsSuccess)
+                Console.WriteLine(saveResult.Error);
         }
 
         private void Open_OnClick(object sender, EventArgs e)
@@ -82,7 +77,13 @@ namespace TagsCloudVisualization
                 text = sr.ReadToEnd();
             }
 
-            BackgroundImage = imgGenerator.GenerateImage(text, tagConfig, visualizationConfig);
+            var img = imgGenerator.GenerateImage(text, tagConfig, visualizationConfig);
+            if (!img.IsSuccess)
+            {
+                Console.WriteLine(img.Error);
+                return;
+            }
+            BackgroundImage = img.Value;
             ClientSize = BackgroundImage.Size;
         }
 

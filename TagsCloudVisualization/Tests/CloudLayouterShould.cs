@@ -31,7 +31,7 @@ namespace TagsCloudVisualization.Tests
         [Test]
         public void PutFirstRectangleOnFirstPoint()
         {
-            var rect = cloudLayouter.PutNextRectangle(new Size(2, 4));
+            var rect = cloudLayouter.PutNextRectangle(new Size(2, 4)).GetValueOrThrow();
             rect.ShouldBeEquivalentTo(new Rectangle(1, 0, 2, 4));
         }
 
@@ -42,7 +42,7 @@ namespace TagsCloudVisualization.Tests
                 .Setup(x => x.IntersectsWith(It.Is<Rectangle>(r => r.IntersectsWith(new Rectangle(1, 0, 2, 4)))))
                 .Returns(true);
 
-            var rect = cloudLayouter.PutNextRectangle(new Size(2, 2));
+            var rect = cloudLayouter.PutNextRectangle(new Size(2, 2)).GetValueOrThrow();
 
             rect.ShouldBeEquivalentTo(new Rectangle(3, 1, 2, 2));
             pointWalker.Verify(x => x.Reset(), Times.Exactly(1));

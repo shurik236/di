@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace TagsCloudVisualization.TagGeneration
@@ -14,18 +12,25 @@ namespace TagsCloudVisualization.TagGeneration
             this.weightAssigner = weightAssigner;
         }
 
-        private static Tag GenerateSingleTag(string word, int frequency, TagGeneratorConfig config)
+        private static Result<Tag> GenerateSingleTag(string word, int frequency, TagGeneratorConfig config)
         {
-            return new Tag(word, (Font) config.FontSelector.DynamicInvoke(word, frequency),
-                (Brush) config.BrushSelector.DynamicInvoke(word, frequency), frequency);
+            return new Tag(word, config.FontSelector(word, frequency),
+                config.BrushSelector(word, frequency), frequency);
         }
 
-        public IEnumerable<Tag> GenerateTags(IEnumerable<string> words, TagGeneratorConfig config)
+        public Result<IEnumerable<Tag>> GenerateTags(IEnumerable<string> words, TagGeneratorConfig config)
         {
-            var tags = weightAssigner.AssignWeights(words)
-                .Select(t => GenerateSingleTag(t.Item1, t.Item2, config));
+            var assignedWeights = weightAssigner.AssignWeights(words);
+            var tags = new List<Tag>();
+            foreach (var t in assignedWeights)
+            {
+                var result = GenerateSingleTag(t.Item1, t.Item2, config);
+                if (!result.IsSuccess)
+                    return Result.Fail<IEnumerable<Tag>>("Tag generation failed. " + result.Error);
+                tags.Add(result.Value);
+            }
 
-            return tags.OrderBy(t => (IComparable) config.OrderingFunc.DynamicInvoke(t));
+            return Result.Ok(tags.OrderBy(t => config.OrderingFunc(t)).AsEnumerable());
         }
 
     }

@@ -4,6 +4,6 @@ namespace TagsCloudVisualization
 {
     public interface ITagLayouter
     {
-        Rectangle PutNextRectangle(Size rectangleSize);
+        Result<Rectangle> PutNextRectangle(Size rectangleSize);
     }
 }

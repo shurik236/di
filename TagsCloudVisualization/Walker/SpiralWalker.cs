@@ -19,7 +19,7 @@ namespace TagsCloudVisualization.Walker
             sparcity = config.CloudSparcity;
         }
 
-        public Point GetNextPoint()
+        public Result<Point> GetNextPoint()
         {
             angle += angularStep;
             var radius = initialRadius + angle * sparcity;

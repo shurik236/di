@@ -31,21 +31,21 @@ namespace TagsCloudVisualization.Tests
         [Test]
         public void SetDifferentColors()
         {
-            var tags = generator.GenerateTags(TestWords, configuration).ToList();
+            var tags = generator.GenerateTags(TestWords, configuration).GetValueOrThrow().ToList();
             tags.Select(x => x.Brush).Should().OnlyHaveUniqueItems();
         }
 
         [Test]
         public void SetDifferentSizes()
         {
-            var tags = generator.GenerateTags(TestWords, configuration).ToList();
+            var tags = generator.GenerateTags(TestWords, configuration).GetValueOrThrow().ToList();
             tags.Select(x => x.Font.Size).Should().OnlyHaveUniqueItems();
         }
 
         [Test]
         public void NotAffectContent()
         {
-            var tags = generator.GenerateTags(TestWords, configuration).ToList();
+            var tags = generator.GenerateTags(TestWords, configuration).GetValueOrThrow().ToList();
             tags.Select(t => t.Value).Should().Contain(TestWords);
             TestWords.Should().Contain(tags.Select(t => t.Value));
         }

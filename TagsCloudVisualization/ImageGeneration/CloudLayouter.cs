@@ -15,18 +15,22 @@ namespace TagsCloudVisualization.ImageGeneration
             this.pointWalker = pointWalker;
         }
        
-        public Rectangle PutNextRectangle(Size rectangleSize)
+        public Result<Rectangle> PutNextRectangle(Size rectangleSize)
         {
             Rectangle newRect;
             do
             {
-                newRect = new Rectangle(pointWalker.GetNextPoint(), rectangleSize);
+                var nextPoint = pointWalker.GetNextPoint();
+                if (!nextPoint.IsSuccess)
+                    return Result.Fail<Rectangle>("Point walker could not generate point. " + nextPoint.Error);
+
+                newRect = new Rectangle(nextPoint.Value, rectangleSize);
                 newRect.Offset((newRect.Left - newRect.Right) / 2, (newRect.Top - newRect.Bottom) / 2);
             } while (Cloud.IntersectsWith(newRect));
 
             Cloud.Add(newRect);
             pointWalker.Reset();
-            return newRect;
+            return Result.Ok(newRect);
         }
     }
 }
