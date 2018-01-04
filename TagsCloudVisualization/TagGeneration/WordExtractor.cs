@@ -26,35 +26,33 @@ namespace TagsCloudVisualization.TagGeneration
             "be", "is", "are", "so", "do", "have", "go", "not", "yes", "no", "get", "mr", "ms", "mrs", "sir"
         };
 
-        private Result<IEnumerable<string>> RemoveIllegalWords(string text)
+        private IEnumerable<string> RemoveIllegalWords(string text)
         {
             var tokenizer = new EnglishRuleBasedTokenizer(splitOnHyphen:false);
 
-            if (!File.Exists(Path.Combine(modelPath, "EnglishPOS.nbin")))
-                return Result.Fail<IEnumerable<string>>("file EnglishPOS.nbin not found");
             var posTagger = new EnglishMaximumEntropyPosTagger(Path.Combine(modelPath, "EnglishPOS.nbin"));
             var tokens = tokenizer.Tokenize(text);
             var partsOfSpeech = posTagger.Tag(tokens);
 
-            if (!File.Exists(Path.Combine(modelPath, "full7z-multext-en.lem")))
-                return Result.Fail<IEnumerable<string>>("file full7z-multext-en.lem not found");
             var stream = File.OpenRead(Path.Combine(modelPath, "full7z-multext-en.lem"));
             var lemmatizer = new Lemmatizer(stream);
 
-            return Result.Ok(tokens.Zip(partsOfSpeech, Tuple.Create)
+            return tokens.Zip(partsOfSpeech, Tuple.Create)
                 .Where(x => !illegalPartsOfSpeech.Contains(x.Item2))
                 .Select(x => lemmatizer.Lemmatize(x.Item1.ToLower()))
-                .Where(x => !illegalWords.Contains(x)));
+                .Where(x => !illegalWords.Contains(x));
         }
 
-        private static Result<string> RemovePunctuation(string str)
+        private static string RemovePunctuation(string str)
         {
-            return Result.Ok(new string(str.Where(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)).ToArray()));
+            return new string(str.Where(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)).ToArray());
         }
 
         public Result<IEnumerable<string>> ExtractWords(string text)
         {
-            return RemoveIllegalWords(RemovePunctuation(text).Value);
+            return Result.Of(() => RemovePunctuation(text))
+                .Then(RemoveIllegalWords)
+                .OnFail(Console.WriteLine);
         }
     }
 }

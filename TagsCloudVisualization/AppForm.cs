@@ -56,34 +56,63 @@ namespace TagsCloudVisualization
 
         private void Save_OnClick(object sender, EventArgs e)
         {
-            var dialog = new SaveFileDialog {Filter = "bmp files(*.bmp) | *.bmp"};
-            if (dialog.ShowDialog() != DialogResult.OK) return;
-            var saveResult = Result.OfAction(() => BackgroundImage.Save(dialog.FileName));
-            if (!saveResult.IsSuccess)
-                Console.WriteLine(saveResult.Error);
+            try
+            {
+                Result.Of(SetSavePath, "Failed to save image.")
+                    .Then(BackgroundImage.Save)
+                    .OnFail(Console.WriteLine);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+        }
+
+        private static string SetSavePath()
+        {
+            var dialog = new SaveFileDialog { Filter = "bmp files(*.bmp) | *.bmp" };
+            dialog.ShowDialog();
+            return dialog.FileName;
         }
 
         private void Open_OnClick(object sender, EventArgs e)
         {
-            var dialog = new OpenFileDialog {Filter = "txt files(*.txt) | *.txt"};
-            if (dialog.ShowDialog() != DialogResult.OK) return;
+            try
+            {
+                Result.Of(SetPathToText, "Working with txt only.")
+                    .Then(GetText)
+                    .Then(text => imgGenerator.GenerateImage(text, tagConfig, visualizationConfig))
+                    .Then(img => SetBackgroundImage(img.Value))
+                    .OnFail(Console.WriteLine);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+        }
 
+        private static string GetText(string path)
+        {
             string text;
-
-            using (var fs = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             using (var bs = new BufferedStream(fs))
             using (var sr = new StreamReader(bs))
             {
                 text = sr.ReadToEnd();
             }
+            return text;
+        }
 
-            var img = imgGenerator.GenerateImage(text, tagConfig, visualizationConfig);
-            if (!img.IsSuccess)
-            {
-                Console.WriteLine(img.Error);
-                return;
-            }
-            BackgroundImage = img.Value;
+        private static string SetPathToText()
+        {
+            var dialog = new OpenFileDialog { Filter = "txt files(*.txt) | *.txt" };
+            dialog.ShowDialog();
+            return dialog.FileName;
+        }
+
+        private void SetBackgroundImage(Image img)
+        {
+            BackgroundImage = img;
             ClientSize = BackgroundImage.Size;
         }
 
@@ -92,5 +121,6 @@ namespace TagsCloudVisualization
             base.OnShown(e);
             Text = "Tag cloud";
         }
+
     }
 }

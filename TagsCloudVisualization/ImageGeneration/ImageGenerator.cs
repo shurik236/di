@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using TagsCloudVisualization.TagGeneration;
@@ -20,12 +21,12 @@ namespace TagsCloudVisualization.ImageGeneration
 
         public Result<Image> GenerateImage(string text, TagGeneratorConfig tagConfig, VisualizationConfig visualizationConfig)
         {
-            var filteredText = wordExtractor.ExtractWords(text);
-            return !filteredText.IsSuccess ? Result.Fail<Image>("Error while creating image. " + filteredText.Error) :
-                DrawTags(tagGenerator.GenerateTags(filteredText.Value, tagConfig).Value, visualizationConfig);
+            return Result.Of(() => wordExtractor.ExtractWords(text).GetValueOrThrow())
+                .Then(filtered => DrawTags(tagGenerator.GenerateTags(filtered, tagConfig).GetValueOrThrow(), visualizationConfig))
+                .OnFail(Console.WriteLine);
         }
 
-        private Result<Image> DrawTags(IEnumerable<Tag> tags, VisualizationConfig config)
+        private Image DrawTags(IEnumerable<Tag> tags, VisualizationConfig config)
         {
             var img = new Bitmap(config.Width, config.Height);
             var layouter = layouterFactory.Create(config);
@@ -34,9 +35,7 @@ namespace TagsCloudVisualization.ImageGeneration
             g.FillRectangle(new SolidBrush(Color.Black), 0, 0, config.Width, config.Height);
             foreach (var tag in tags.Take(config.TagLimit))
             {
-                var rect = layouter.PutNextRectangle(tag.GetSize());
-                if (!rect.IsSuccess)
-                    return Result.Fail<Image>("Error while creating image. " + rect.Error);
+                var rect = layouter.PutNextRectangle(tag.GetSize()).OnFail(Console.WriteLine);
                 g.DrawString(tag.Value, tag.Font, tag.Brush, rect.Value);
             }
             return img;

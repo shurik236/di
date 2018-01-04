@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using TagsCloudVisualization.SupportModules;
 using TagsCloudVisualization.Walker;
 
@@ -20,9 +21,7 @@ namespace TagsCloudVisualization.ImageGeneration
             Rectangle newRect;
             do
             {
-                var nextPoint = pointWalker.GetNextPoint();
-                if (!nextPoint.IsSuccess)
-                    return Result.Fail<Rectangle>("Point walker could not generate point. " + nextPoint.Error);
+                var nextPoint = pointWalker.GetNextPoint().OnFail(Console.WriteLine);
 
                 newRect = new Rectangle(nextPoint.Value, rectangleSize);
                 newRect.Offset((newRect.Left - newRect.Right) / 2, (newRect.Top - newRect.Bottom) / 2);
