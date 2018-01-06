@@ -51,8 +51,7 @@ namespace TagsCloudVisualization.TagGeneration
         public Result<IEnumerable<string>> ExtractWords(string text)
         {
             return Result.Of(() => RemovePunctuation(text))
-                .Then(RemoveIllegalWords)
-                .OnFail(Console.WriteLine);
+                .Then(RemoveIllegalWords);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace TagsCloudVisualization.ImageGeneration
             Rectangle newRect;
             do
             {
-                var nextPoint = pointWalker.GetNextPoint().OnFail(Console.WriteLine);
+                var nextPoint = pointWalker.GetNextPoint();
 
                 newRect = new Rectangle(nextPoint.Value, rectangleSize);
                 newRect.Offset((newRect.Left - newRect.Right) / 2, (newRect.Top - newRect.Bottom) / 2);

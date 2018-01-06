@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -56,16 +57,9 @@ namespace TagsCloudVisualization
 
         private void Save_OnClick(object sender, EventArgs e)
         {
-            try
-            {
-                Result.Of(SetSavePath, "Failed to save image.")
-                    .Then(BackgroundImage.Save)
-                    .OnFail(Console.WriteLine);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-            }
+            Result.Of(SetSavePath, "Failed to save image.")
+                .Then(BackgroundImage.Save)
+                .OnFail(error => MessageBox.Show(error));
         }
 
         private static string SetSavePath()
@@ -77,18 +71,11 @@ namespace TagsCloudVisualization
 
         private void Open_OnClick(object sender, EventArgs e)
         {
-            try
-            {
-                Result.Of(SetPathToText, "Working with txt only.")
-                    .Then(GetText)
-                    .Then(text => imgGenerator.GenerateImage(text, tagConfig, visualizationConfig))
-                    .Then(img => SetBackgroundImage(img.Value))
-                    .OnFail(Console.WriteLine);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-            }
+            Result.Of(SetPathToText, "Working with txt only.")
+                .Then(GetText)
+                .Then(text => imgGenerator.GenerateImage(text, tagConfig, visualizationConfig))
+                .Then(SetBackgroundImage)
+                .OnFail(error => MessageBox.Show(error));
         }
 
         private static string GetText(string path)

@@ -96,7 +96,7 @@ namespace TagsCloudVisualization
             return input.Then(inp => OfAction(() => continuation(inp)));
         }
 
-        private static Result<TOutput> Then<TInput, TOutput>(
+        public static Result<TOutput> Then<TInput, TOutput>(
             this Result<TInput> input,
             Func<TInput, Result<TOutput>> continuation)
         {

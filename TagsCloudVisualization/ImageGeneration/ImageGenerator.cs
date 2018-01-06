@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using TagsCloudVisualization.TagGeneration;
@@ -21,9 +20,9 @@ namespace TagsCloudVisualization.ImageGeneration
 
         public Result<Image> GenerateImage(string text, TagGeneratorConfig tagConfig, VisualizationConfig visualizationConfig)
         {
-            return Result.Of(() => wordExtractor.ExtractWords(text).GetValueOrThrow())
-                .Then(filtered => DrawTags(tagGenerator.GenerateTags(filtered, tagConfig).GetValueOrThrow(), visualizationConfig))
-                .OnFail(Console.WriteLine);
+            return wordExtractor.ExtractWords(text)
+                .Then(words => tagGenerator.GenerateTags(words, tagConfig))
+                .Then(tags => DrawTags(tags, visualizationConfig));
         }
 
         private Image DrawTags(IEnumerable<Tag> tags, VisualizationConfig config)
@@ -35,8 +34,8 @@ namespace TagsCloudVisualization.ImageGeneration
             g.FillRectangle(new SolidBrush(Color.Black), 0, 0, config.Width, config.Height);
             foreach (var tag in tags.Take(config.TagLimit))
             {
-                var rect = layouter.PutNextRectangle(tag.GetSize()).OnFail(Console.WriteLine);
-                g.DrawString(tag.Value, tag.Font, tag.Brush, rect.Value);
+                layouter.PutNextRectangle(tag.GetSize())
+                    .Then(rect => g.DrawString(tag.Value, tag.Font, tag.Brush, rect));
             }
             return img;
         }

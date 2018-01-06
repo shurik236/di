@@ -13,7 +13,7 @@ namespace TagsCloudVisualization.TagGeneration
             this.weightAssigner = weightAssigner;
         }
 
-        private static Result<Tag> GenerateSingleTag(string word, int frequency, TagGeneratorConfig config)
+        private static Tag GenerateSingleTag(string word, int frequency, TagGeneratorConfig config)
         {
             return new Tag(word, config.FontSelector(word, frequency),
                 config.BrushSelector(word, frequency), frequency);
@@ -23,8 +23,7 @@ namespace TagsCloudVisualization.TagGeneration
         {
             var assignedWeights = weightAssigner.AssignWeights(words);
             var tags = assignedWeights
-                .Select(t => GenerateSingleTag(t.Item1, t.Item2, config).OnFail(Console.WriteLine))
-                .Select(result => result.Value)
+                .Select(t => GenerateSingleTag(t.Item1, t.Item2, config))
                 .ToList();
 
             return Result.Ok(tags.OrderBy(t => config.OrderingFunc(t)).AsEnumerable());
