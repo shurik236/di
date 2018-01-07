@@ -22,22 +22,37 @@ namespace TagsCloudVisualization.ImageGeneration
         {
             return wordExtractor.ExtractWords(text)
                 .Then(words => tagGenerator.GenerateTags(words, tagConfig))
-                .Then(tags => DrawTags(tags, visualizationConfig));
+                .Then(tags => DrawCloud(tags, visualizationConfig));
         }
 
-        private Image DrawTags(IEnumerable<Tag> tags, VisualizationConfig config)
+        private Result<Image> DrawCloud(IEnumerable<Tag> tags, VisualizationConfig config)
         {
-            var img = new Bitmap(config.Width, config.Height);
-            var layouter = layouterFactory.Create(config);
+            return Result.Of(() => CreateImageTemplate(config), "Failed to draw cloud.")
+                .Then(image => DrawBackground(image, new SolidBrush(Color.Black)))
+                .Then(image => DrawAllTags(image, tags.Take(config.TagLimit), layouterFactory.Create(config)));
+        }
 
-            var g = Graphics.FromImage(img);
-            g.FillRectangle(new SolidBrush(Color.Black), 0, 0, config.Width, config.Height);
-            foreach (var tag in tags.Take(config.TagLimit))
-            {
-                layouter.PutNextRectangle(tag.GetSize())
-                    .Then(rect => g.DrawString(tag.Value, tag.Font, tag.Brush, rect));
-            }
+        private static Image CreateImageTemplate(VisualizationConfig config)
+        {
+            //I'm a STUB!
+            return new Bitmap(config.Width, config.Height);
+        }
+
+        private static Image DrawBackground(Image img, Brush brush)
+        {
+            Graphics.FromImage(img).FillRectangle(brush, 0, 0, img.Width, img.Height);
             return img;
+        }
+
+        private static Result<Image> DrawAllTags(Image img, IEnumerable<Tag> tags, ITagLayouter layouter)
+        {
+            return Result.Of(() =>
+            {
+                foreach (var tag in tags)
+                    layouter.PutNextRectangle(tag.GetSize())
+                        .Then(rect => Graphics.FromImage(img).DrawString(tag.Value, tag.Font, tag.Brush, rect));
+                return img;
+            }, "Failed to draw some tags.");
         }
     }
 }
