@@ -44,15 +44,18 @@ namespace TagsCloudVisualization.ImageGeneration
             return img;
         }
 
+        private static Result<None> DrawSingleTag(Image img, Tag tag, ITagLayouter layouter)
+        {
+            return Result.Of(tag.GetSize)
+                .Then(layouter.PutNextRectangle)
+                .Then(rect => Graphics.FromImage(img).DrawString(tag.Value, tag.Font, tag.Brush, rect));
+        }
+
         private static Result<Image> DrawAllTags(Image img, IEnumerable<Tag> tags, ITagLayouter layouter)
         {
-            return Result.Of(() =>
-            {
-                foreach (var tag in tags)
-                    layouter.PutNextRectangle(tag.GetSize())
-                        .Then(rect => Graphics.FromImage(img).DrawString(tag.Value, tag.Font, tag.Brush, rect));
-                return img;
-            }, "Failed to draw some tags.");
+            return tags.Aggregate(Result.Ok(),
+                    (result, nextTag) => result.Then(_ => DrawSingleTag(img, nextTag, layouter)))
+                .Then(_ => img);
         }
     }
 }
